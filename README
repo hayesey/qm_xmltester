@@ -19,6 +19,8 @@ For now the URL to the XML-RPC server is hard-coded into the code so this needs 
 
 There's also a ready compiled class file for Java 1.6+ (which is useless to you for now given the above)!
 
+Just put the qm_xmltester folder into your webapps folder and web browse to the URL for your servlet container /qm_xmltester/servlet/xmltest
+
 Have fun.
 
 Paul Hayes - paul@polog40.co.uk
