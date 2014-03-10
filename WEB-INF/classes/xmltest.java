@@ -47,7 +47,7 @@ public class xmltest extends HttpServlet {
 		toTime = "23:59:59";
 	    }
 	    if (qNames == null) {
-		qNames = "booking|freight|freightoverflow";
+		qNames = "00 All|testqueue";
 	    }
 	    if (agentFilter == null) {
 		agentFilter = "";
@@ -63,13 +63,13 @@ public class xmltest extends HttpServlet {
 	    Object token = null;
 
 	    if (method.equals("QM.stats")) {
-		Object[] parms = { qNames, "robot", "Hart1eyHare", "", "", fromDate + "." + fromTime, toDate + "." + toTime, agentFilter, arRes };
+		Object[] parms = { qNames, "robot", "robot", "", "", fromDate + "." + fromTime, toDate + "." + toTime, agentFilter, arRes };
 		token = client.invoke( method, parms );
 	    } else if (method.equals("QM.realtime")) {
-		Object[] parms = { qNames, "robot", "Hart1eyHare", "", agentFilter, arRes };
+		Object[] parms = { qNames, "robot", "robot", "", agentFilter, arRes };
 		token = client.invoke( method, parms );
 	    } else if (method.equals("QM.auth")) {
-		Object[] parms = { "robot", "Hart1eyHare" };
+		Object[] parms = { "robot", "robot" };
 		token = client.invoke( method, parms );
 	    } else {
 		out.println("<h2>Invalid method use one of: QM.stats, QM.realtime or QM.auth</h2>");
