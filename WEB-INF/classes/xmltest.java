@@ -2,12 +2,17 @@ import java.io.*;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.util.*;
+import java.text.SimpleDateFormat;
 import java.net.URL;
 import redstone.xmlrpc.*;
 
 import java.util.ArrayList;
 
 public class xmltest extends HttpServlet {
+
+    private Properties config = new Properties();
+    private SimpleDateFormat dateOnly = new SimpleDateFormat("yyyy-MM-dd");
+
 
     public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 	doGet(req, res);
@@ -16,7 +21,13 @@ public class xmltest extends HttpServlet {
 
     public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
-        String stUrl = "http://localhost:8080/queuemetrics/xmlrpc.do";
+	String path = req.getServletContext().getRealPath("/WEB-INF/xmltest.properties");
+	config.load(new FileInputStream(path));
+	String stUrl = config.getProperty("stUrl");
+	String stUser = config.getProperty("stUser");
+	String stPass = config.getProperty("stPass");
+
+        //String stUrl = "http://192.168.2.82:8080/queuemetrics/xmlrpc.do";
         System.setProperty("org.xml.sax.driver","org.apache.xerces.parsers.SAXParser");
 
         try {
@@ -39,8 +50,9 @@ public class xmltest extends HttpServlet {
 		postQuery = "AgentsDO.ReportAgents|DetailsDO.AgentSessions";
 	    }
 	    if ((fromDate == null) || (toDate == null)) {
-		fromDate = "2009-03-04";
-		toDate = "2009-03-04";
+		Date now = new Date();
+		fromDate = dateOnly.format(now);
+		toDate = dateOnly.format(now);
 	    }
 	    if ((fromTime == null) || (toTime == null)) {
 		fromTime = "00:00:00";
@@ -63,13 +75,13 @@ public class xmltest extends HttpServlet {
 	    Object token = null;
 
 	    if (method.equals("QM.stats")) {
-		Object[] parms = { qNames, "robot", "robot", "", "", fromDate + "." + fromTime, toDate + "." + toTime, agentFilter, arRes };
+		Object[] parms = { qNames, stUser, stPass, "", "", fromDate + "." + fromTime, toDate + "." + toTime, agentFilter, arRes };
 		token = client.invoke( method, parms );
 	    } else if (method.equals("QM.realtime")) {
-		Object[] parms = { qNames, "robot", "robot", "", agentFilter, arRes };
+		Object[] parms = { qNames, stUser, stPass, "", agentFilter, arRes };
 		token = client.invoke( method, parms );
 	    } else if (method.equals("QM.auth")) {
-		Object[] parms = { "robot", "robot" };
+		Object[] parms = { stUser, stPass };
 		token = client.invoke( method, parms );
 	    } else {
 		out.println("<h2>Invalid method use one of: QM.stats, QM.realtime or QM.auth</h2>");
